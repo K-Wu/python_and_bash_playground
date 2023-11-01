@@ -1,4 +1,11 @@
 // x86-64 gcc 12.1 --std=c++17
+// Program returned: 139
+// Program stdout
+// 0x7ffce1126070
+// 0x17b4f00
+// 5
+// Program stderr
+// Program terminated with signal: SIGSEGV
 #include <iostream>
 #include <memory>
 #include <vector>
@@ -13,7 +20,7 @@ std::shared_ptr<MyStruct> test() {
   return ptr_to_abc;
 }
 
-MyStruct* test2() {
+MyStruct *test2() {
   MyStruct abc({1, 4, 5, 8, 15});
   return &abc;
 }
