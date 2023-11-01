@@ -5,5 +5,5 @@ This directory stores all godbolt examples mentioned in the comment just in case
 3. [h66hP77qM.cpp](https://godbolt.org/z/3YfEK6W3f) demonstrates ND tensor related functions resolved at compile time.
 4. [KaWzKPW8G.cpp](https://godbolt.org/z/KaWzKPW8G) demonstrates templated base class and templated derive class.
 5. [3oaTddKxG.cpp](https://godbolt.org/z/3oaTddKxG) demonstrates only the base class object in the derived class object will be copied when passing derived class object to a function that takes base class object as parameter.
-6. [7T4e3q5zT.cpp](https://godbolt.org/z/7T4e3q5zT) varies from 3oaTddKxG to show virtual function during which a member in the derived class is accessed still works when the derived class object is passed by-value to a function that takes base class object as parameter.
+6. [7T4e3q5zT.cpp](https://godbolt.org/z/7T4e3q5zT) varies from 3oaTddKxG to show derived class virtual function won't be called when the derived class object is passed by-value to a function that takes base class object as parameter. However, if we pass the base class object by-reference instead in print_this(), the derived class virtual function will be called now.
 7. [Yj86q3fEP.cpp](https://godbolt.org/z/Yj86q3fEP) demonstrates the use of shared_ptr.
