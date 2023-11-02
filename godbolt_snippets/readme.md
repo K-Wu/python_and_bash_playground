@@ -7,3 +7,4 @@ This directory stores all godbolt examples mentioned in the comment just in case
 5. [3oaTddKxG.cpp](https://godbolt.org/z/3oaTddKxG) demonstrates only the base class object in the derived class object will be copied when passing derived class object to a function that takes base class object as parameter.
 6. [7T4e3q5zT.cpp](https://godbolt.org/z/7T4e3q5zT) varies from 3oaTddKxG to show derived class virtual function won't be called when the derived class object is passed by-value to a function that takes base class object as parameter. However, if we pass the base class object by-reference instead in print_this(), the derived class virtual function will be called now.
 7. [Yj86q3fEP.cpp](https://godbolt.org/z/Yj86q3fEP) demonstrates the use of shared_ptr.
+8. [Ebf1qE1xa.cpp](https://godbolt.org/z/Ebf1qE1xa) demonstrates how to specify initial value for class members, e.g., a std::vector<int>, via initializer list.
