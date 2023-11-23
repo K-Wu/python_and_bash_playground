@@ -9,3 +9,4 @@ This directory stores all godbolt examples mentioned in the comment just in case
 7. [Yj86q3fEP.cpp](https://godbolt.org/z/Yj86q3fEP) demonstrates the use of shared_ptr.
 8. [Ebf1qE1xa.cpp](https://godbolt.org/z/Ebf1qE1xa) demonstrates how to specify initial value for class members, e.g., a std::vector<int>, via initializer list.
 9. [rGzeWxzqP.cpp](https://godbolt.org/z/rGzeWxzqP) is a variant from Ebf1qE1xa that demonstrates how to use new operator with constructor arguments to create a class object.
+10. [Yodb91aMj.cpp](https://godbolt.org/z/Yodb91aMj) shows that virtual function preserves its virtual-ness in derived class.
