@@ -10,4 +10,4 @@ This directory stores all godbolt examples mentioned in the comment just in case
 8. [Ebf1qE1xa.cpp](https://godbolt.org/z/Ebf1qE1xa) demonstrates how to specify initial value for class members, e.g., a std::vector<int>, via initializer list.
 9. [rGzeWxzqP.cpp](https://godbolt.org/z/rGzeWxzqP) is a variant from Ebf1qE1xa that demonstrates how to use new operator with constructor arguments to create a class object.
 10. [Yodb91aMj.cpp](https://godbolt.org/z/Yodb91aMj) shows that virtual function preserves its virtual-ness in derived class.
-11. [xrYhfTWMb.cpp](https://godbolt.org/z/xrYhfTWMb) extends from Yodb91aMj to show that virtual function will call the non-virtual function of the class where the virtual function is defined.
+11. [xrYhfTWMb.cpp](https://godbolt.org/z/xrYhfTWMb) extends from Yodb91aMj to show that virtual function will NOT call the non-virtual function of the class where the virtual function is defined.
