@@ -10,9 +10,14 @@ class Parent:
         print("__init__ of Parent")
         self.value = "Inside Parent"
 
+    @staticmethod
+    def _show():
+        print("show() of Parent")
+
     # Parent's show method
-    def show(self):
-        print(self.value)
+    @staticmethod
+    def show():
+        __class__._show()
 
 
 # Defining child class
@@ -26,6 +31,10 @@ class Child(Parent):
     # def show(self):
     #     print(self.value)
 
+    @staticmethod
+    def _show():
+        print("show() of Child")
+
 
 # Driver's code
 obj1 = Parent()
@@ -33,3 +42,15 @@ obj2 = Child()
 
 obj1.show()
 obj2.show()
+
+
+for cls in [Child]:
+
+    @staticmethod
+    def show():
+        cls._show()
+
+    cls.show = show
+
+obj3 = Child()
+obj3.show()
