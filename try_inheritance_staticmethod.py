@@ -43,8 +43,9 @@ obj2 = Child()
 obj1.show()
 obj2.show()
 
+cls_list: list[type[Parent]] = [Child]
 
-for cls in [Child]:
+for cls in cls_list:
 
     @staticmethod
     def show():

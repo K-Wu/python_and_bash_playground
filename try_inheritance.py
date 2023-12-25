@@ -27,9 +27,16 @@ class Child(Parent):
     #     print(self.value)
 
 
+class GrandChild(Child):
+    ...
+
+
 # Driver's code
 obj1 = Parent()
 obj2 = Child()
 
 obj1.show()
 obj2.show()
+
+print(issubclass(Child, Parent))
+print(issubclass(GrandChild, Parent))
