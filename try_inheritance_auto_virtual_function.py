@@ -47,6 +47,10 @@ class MyBar(Bar):
 f2 = MyFighters()
 f2.foo_bar_func()
 
+# From https://www.codesdope.com/course/python-method-overriding-and-mro/#:~:text=Python%20Rules%20of%20Method%20Resolution%20Order
+print(MyFighters.__mro__)
+print(MyFighters.mro())
+
 # Output:
 # fighters init
 # foo init
