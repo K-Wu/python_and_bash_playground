@@ -7,8 +7,11 @@ this = sys.modules[__name__]
 # we can explicitly make assignments on it
 this.db_name = None
 
+this.test_an_undefined_variable: list
+
 
 def initialize_db(name):
+    this.test_define_an_undefined_variable = "hello world"
     if this.db_name is None:
         # also in local function scope. no scope specifier like global is needed
         this.db_name = name
