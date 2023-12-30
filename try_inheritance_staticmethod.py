@@ -5,6 +5,8 @@
 
 # Defining parent class
 class Parent:
+    custom_str = "custom_str"  # class variable shared by all instances
+
     # Constructor
     def __init__(self):
         print("__init__ of Parent")
@@ -18,11 +20,12 @@ class Parent:
     @staticmethod
     def show():
         __class__._show()
+        print(__class__.custom_str)
 
 
 # Defining child class
 class Child(Parent):
-    ...
+    custom_str = "custom_str2"
     # Constructor
     # def __init__(self):
     #    self.value = "Inside Child"
@@ -37,11 +40,11 @@ class Child(Parent):
 
 
 # Driver's code
-obj1 = Parent()
-obj2 = Child()
+# obj1 = Parent()
+# obj2 = Child()
 
-obj1.show()
-obj2.show()
+Parent.show()
+Child.show()
 
 cls_list: list[type[Parent]] = [Child]
 
@@ -53,5 +56,13 @@ for cls in cls_list:
 
     cls.show = show
 
-obj3 = Child()
-obj3.show()
+# obj3 = Child()
+Child.show()
+print(Child.__dict__)
+
+print(Child.__name__)
+print(Child.__qualname__)
+Child.__name__ = "Child2"
+Child.__qualname__ = "Child2"
+Child2.show()
+Child.show()
