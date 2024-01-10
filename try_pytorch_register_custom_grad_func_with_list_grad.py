@@ -5,23 +5,55 @@ import torch
 import math
 
 
+class DummyCtx:
+    def __init__(self):
+        self.saved_tensors = []
+        # self._saved_scalars = dict()
+
+    def save_for_backward(self, *args):
+        self.saved_tensors = args
+
+    # support to scalar saving e.g. ctx.a_scalar = 1
+    # def __setattr__(self, name, value):
+    #     if name == "saved_tensors":
+    #         self.__dict__[name] = value
+    #     elif name == "_saved_scalars":
+    #         # should only happen during __init__, otherwise return reserved name error
+    #         if type(value) != dict:
+    #             raise ValueError("Reserved name: _saved_scalars")
+    #         if name in self.__dict__:
+    #             raise ValueError("Reserved name: _saved_scalars")
+    #         self.__dict__[name] = value
+    #     else:
+    #         self.saved_scalars[name] = value
+
+    # def __getattr__(self, name):
+    #     if name == "saved_tensors":
+    #         return self.__dict__[name]
+    #     else:
+    #         return self.saved_scalars[name]
+
+
 class LegendrePolynomial3(torch.autograd.Function):
     """
     We can implement our own custom autograd Functions by subclassing
     torch.autograd.Function and implementing the forward and backward passes
-    which operate on Tensors.
+    which operate on Tensorssave
     """
 
     @staticmethod
-    def forward(ctx, inputs, dummy_list, dummy_scalar):
+    def forward(ctx, inputs):
         """
         In the forward pass we receive a Tensor containing the input and return
         a Tensor containing the output. ctx is a context object that can be used
         to stash information for backward computation. You can cache arbitrary
         objects for use in the backward pass using the ctx.save_for_backward method.
         """
-        ctx.save_for_backward(inputs)
-        ctx.arbitrary_dict = {"a": 1, "b": 2, "c": 3}
+        inputs = inputs[0]
+        inputs_to_save = torch.zeros_like(inputs)
+        inputs_to_save[:] = inputs
+        ctx.save_for_backward(inputs_to_save)
+        ctx.backward_cache = (inputs_to_save, inputs_to_save)
         return 0.5 * (5 * inputs**3 - 3 * inputs)
 
     @staticmethod
@@ -32,8 +64,7 @@ class LegendrePolynomial3(torch.autograd.Function):
         with respect to the input.
         """
         (inputs,) = ctx.saved_tensors
-        # print(ctx.arbitrary_dict["a"])
-        return grad_output * 1.5 * (5 * inputs**2 - 1), None, None
+        return [grad_output * 1.5 * (5 * inputs**2 - 1)]
 
 
 dtype = torch.float
@@ -63,7 +94,7 @@ for t in range(2000):
 
     # Forward pass: compute predicted y using operations; we compute
     # P3 using our custom autograd operation.
-    y_pred = a + b * P3(c + d * x, [a, b, c, d, "sadfas"], 1.1)
+    y_pred = a + b * P3([c + d * x])
 
     # Compute and print loss
     loss = (y_pred - y).pow(2).sum()
@@ -87,3 +118,24 @@ for t in range(2000):
         d.grad = None
 
 print(f"Result: y = {a.item()} + {b.item()} * P3({c.item()} + {d.item()} x)")
+# Result: y = -5.394172664097141e-09 + -2.208526849746704 * P3(1.367587154632588e-09 + 0.2554861009120941 x)
+
+
+def dummy_decorator(**kwargs):
+    def actual_decorator(func):
+        print("dummy_decorator triggered")
+        return func
+
+    return actual_decorator
+
+
+my_forward = dummy_decorator()(LegendrePolynomial3.forward)
+
+print(LegendrePolynomial3.forward(DummyCtx(), torch.tensor(0.5).unsqueeze(0)))
+print(LegendrePolynomial3.forward(DummyCtx(), torch.tensor(0.1).unsqueeze(0)))
+print(my_forward(DummyCtx(), torch.tensor(0.5).unsqueeze(0)))
+print(
+    dummy_decorator()(LegendrePolynomial3.forward)(
+        DummyCtx(), torch.tensor(0.1).unsqueeze(0)
+    )
+)
