@@ -20,6 +20,7 @@ def unpack_hook(i):
 with torch.autograd.graph.saved_tensors_hooks(pack_hook, unpack_hook):
     a = torch.randn(5, requires_grad=True)
     y = torch.exp(a)
+    y2 = torch.exp(a)
     z = torch.exp(y)
     print(y.grad_fn._saved_result.equal(y))  # True
     print(y.grad_fn._saved_result is y)  # False

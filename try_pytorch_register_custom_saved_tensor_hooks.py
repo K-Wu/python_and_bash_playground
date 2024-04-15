@@ -1,6 +1,6 @@
 # Adapted from https://pytorch.org/tutorials/intermediate/autograd_saved_tensors_hooks_tutorial.html
 import torch
-
+import typing
 import math
 
 
@@ -47,7 +47,7 @@ def unpack_hook(x):
 
 
 with torch.autograd.graph.saved_tensors_hooks(pack_hook, unpack_hook):
-    a = torch.randn(5, requires_grad=True)
+    a = torch.randn(5, 5, requires_grad=True)
     y = torch.exp(a)
     print(y.grad_fn._saved_result.equal(y))  # True
     print(y.grad_fn._saved_result is y)  # False
@@ -61,13 +61,26 @@ with torch.autograd.graph.saved_tensors_hooks(pack_hook, unpack_hook):
         == y.untyped_storage().size()
     )  # True
     print(y.grad_fn._saved_result.stride() == y.stride())  # True
+    print(y.grad_fn._saved_result.dtype == y.dtype)  # True
 
     # print y memory format
     print(
         y.untyped_storage().data_ptr(),
+        y.dtype,
         y.untyped_storage().size(),
         y.stride(),
         y.untyped_storage().type(),
+    )
+    print(
+        isinstance(
+            (
+                y.untyped_storage().data_ptr(),
+                y.dtype,
+                y.untyped_storage().size(),
+                y.stride(),
+            ),
+            typing.Hashable,
+        )
     )
 
     # Try bck propogation
