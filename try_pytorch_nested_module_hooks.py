@@ -10,22 +10,33 @@ class MultiplyModule(nn.Module):
         return x * y
 
 
-def oneline_print(m: ...):
-    repr = str(m)
-    repr = repr.replace("\n", "↵")
-    print(repr)
+def oneline_print(*args):
+    reprs = [str(arg).replace("\n", "↵") for arg in args]
+    print(*reprs, flush=True)
 
 
 def forward_pre_hook(m, inputs):
-    oneline_print(m)
+    oneline_print("[Forward Pre Hook]", m)
 
 
 def forward_hook(m, inputs, outputs):
-    oneline_print(m)
+    oneline_print("[Forward Hook]", m)
+
+
+def full_backward_hook(m, grad_input, grad_output):
+    oneline_print("[Full Backward]", m)
+
+
+def full_backward_pre_hook(m, grad_output):
+    oneline_print("[Full Backward Pre]", m)
 
 
 nn.modules.module.register_module_forward_pre_hook(forward_pre_hook)
 nn.modules.module.register_module_forward_hook(forward_hook)
+nn.modules.module.register_module_full_backward_pre_hook(
+    full_backward_pre_hook
+)
+nn.modules.module.register_module_full_backward_hook(full_backward_hook)
 
 model = nn.Sequential(
     nn.Linear(10, 100),
@@ -33,6 +44,7 @@ model = nn.Sequential(
 )
 
 x = torch.randn(10, 10)
+x.requires_grad = True
 loss = model(x).sum()
 loss.backward()
 
