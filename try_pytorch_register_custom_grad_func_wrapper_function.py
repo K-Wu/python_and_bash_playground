@@ -4,7 +4,15 @@
 
 import torch
 import math
-from torch.utils.checkpoint import detach_variable
+from torch.utils.checkpoint import (
+    detach_variable,
+    _supports_autocast,
+    _get_device_module,
+    _infer_device_type,
+    _get_autocast_kwargs,
+)
+
+import contextlib
 
 
 class LegendrePolynomial3(torch.autograd.Function):
@@ -65,6 +73,11 @@ class FuncWrapper(torch.autograd.Function):
         ctx.save_for_backward(*tensor_inputs)
         ctx.kwargs = kwargs
 
+        ctx.device = _infer_device_type(*args)
+        ctx.device_autocast_kwargs, ctx.cpu_autocast_kwargs = (
+            _get_autocast_kwargs(ctx.device)
+        )
+
         with torch.no_grad():
             outputs = run_function(*args)
         return outputs
@@ -88,15 +101,16 @@ class FuncWrapper(torch.autograd.Function):
 
         detached_inputs = detach_variable(tuple(inputs))
 
-        # device_autocast_ctx = (
-        #     device_module.amp.autocast(**ctx.device_autocast_kwargs)
-        #     if _supports_autocast(ctx.device)
-        #     else contextlib.nullcontext()
-        # )
-        # with torch.enable_grad(), device_autocast_ctx, torch.cpu.amp.autocast(
-        #     **ctx.cpu_autocast_kwargs
-        # ):
-        with torch.enable_grad():
+        device_module = _get_device_module(ctx.device)
+        device_autocast_ctx = (
+            device_module.amp.autocast(**ctx.device_autocast_kwargs)
+            if _supports_autocast(ctx.device)
+            else contextlib.nullcontext()
+        )
+        with torch.enable_grad(), device_autocast_ctx, torch.cpu.amp.autocast(
+            **ctx.cpu_autocast_kwargs
+        ):
+            # with torch.enable_grad():
             outputs = ctx.run_function(*detached_inputs, **ctx.kwargs)
 
         if isinstance(outputs, torch.Tensor):
