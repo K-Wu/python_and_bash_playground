@@ -44,7 +44,7 @@ for idx in range(10):
     # loss = out2_annotated.mean()
     loss = loss_fn(out2_annotated, torch.randn(1, 10))
 
-    USE_GRAD = False
+    USE_GRAD = True
     if USE_GRAD:
         # calculate the gradient of layer 2's parameters
         grad_2 = torch.autograd.grad(
