@@ -35,17 +35,18 @@ loss_fn = torch.nn.MSELoss(reduction="sum")
 
 
 for idx in range(10):
-    out1 = layer1(x)
-    out1_annotated = PassThrough1.apply(out1)
-    # out1_annotated.retain_grad()
-    out2 = layer2(out1_annotated)
-    out2_annotated = PassThrough2.apply(out2)
 
-    # loss = out2_annotated.mean()
-    loss = loss_fn(out2_annotated, torch.randn(1, 10))
+    USE_GRAD = False
 
-    USE_GRAD = True
     if USE_GRAD:
+        out1 = layer1(x)
+        out1_annotated = PassThrough1.apply(out1)
+        out2 = layer2(out1_annotated)
+        out2_annotated = PassThrough2.apply(out2)
+
+        # loss = out2_annotated.mean()
+        loss = loss_fn(out2_annotated, torch.randn(1, 10))
+
         # calculate the gradient of layer 2's parameters
         grad_2 = torch.autograd.grad(
             loss,
@@ -66,6 +67,17 @@ for idx in range(10):
             x -= 0.01 * grad_1[-1]
 
     else:
+
+        out1 = layer1(x)
+        out1_annotated = PassThrough1.apply(out1)
+        out1_annotated_d = out1_annotated.detach()
+        out1_annotated_d.requires_grad = True
+        out2 = layer2(out1_annotated_d)
+        out2_annotated = PassThrough2.apply(out2)
+
+        # loss = out2_annotated.mean()
+        loss = loss_fn(out2_annotated, torch.randn(1, 10))
+
         USE_FULL_AUTOMATIC_BACKWARD = False
         if USE_FULL_AUTOMATIC_BACKWARD:
             loss.backward()
@@ -73,23 +85,29 @@ for idx in range(10):
             layer1.zero_grad()
             layer2.zero_grad()
 
-            for param in layer1.parameters():
-                param.retain_grad()
             for param in layer2.parameters():
                 param.retain_grad()
             out2_annotated.retain_grad()
+            out1_annotated.retain_grad()
+            for param in layer1.parameters():
+                param.retain_grad()
             x.retain_grad()
             # calculate the gradient of layer 2's parameters
             torch.autograd.backward(
                 loss,
-                inputs=list(layer2.parameters()) + [out1_annotated],
+                inputs=list(layer2.parameters()) + [out1_annotated_d],
                 retain_graph=True,
             )
             # calculate the gradient of layer 1's parameters
             torch.autograd.backward(
                 out1_annotated,
                 inputs=list(layer1.parameters()) + [x],
-                grad_tensors=out1_annotated.grad,
+                grad_tensors=out1_annotated_d.grad,
+            )
+
+            print(
+                out1_annotated_d.untyped_storage().data_ptr(),
+                out1_annotated.untyped_storage().data_ptr(),
             )
 
         with torch.no_grad():
