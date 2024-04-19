@@ -96,7 +96,6 @@ for idx in range(10):
             torch.autograd.backward(
                 loss,
                 inputs=list(layer2.parameters()) + [out1_annotated_d],
-                retain_graph=True,
             )
             # calculate the gradient of layer 1's parameters
             torch.autograd.backward(
