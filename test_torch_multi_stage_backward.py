@@ -6,6 +6,7 @@ import torch.nn as nn
 class PassThrough1(torch.autograd.Function):
     @staticmethod
     def forward(ctx, x):
+        print(ctx)
         return x
 
     @staticmethod
