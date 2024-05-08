@@ -22,6 +22,10 @@ class LegendrePolynomial3(torch.autograd.Function):
         inputs_to_save = torch.zeros_like(inputs)
         inputs_to_save[:] = inputs
         ctx.save_for_backward(inputs_to_save)
+        # These stored as attributes without using save_for_backward will not trigger
+        # pack / unpack hooks
+        ctx.dummy = dummy_kwargs_1
+        ctx.dummy2 = dummy_kwargs_2
 
         return 0.5 * (5 * inputs**3 - 3 * inputs)
 

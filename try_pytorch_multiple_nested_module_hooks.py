@@ -31,12 +31,36 @@ def full_backward_pre_hook(m, grad_output):
     oneline_print("[Full Backward Pre]", m)
 
 
+def forward_pre_hook2(m, inputs):
+    oneline_print("[2Forward Pre Hook]", m)
+
+
+def forward_hook2(m, inputs, outputs):
+    oneline_print("[2Forward Hook]", m)
+
+
+def full_backward_hook2(m, grad_input, grad_output):
+    oneline_print("[2Full Backward]", m)
+
+
+def full_backward_pre_hook2(m, grad_output):
+    oneline_print("[2Full Backward Pre]", m)
+
+
 nn.modules.module.register_module_forward_pre_hook(forward_pre_hook)
 nn.modules.module.register_module_forward_hook(forward_hook)
 nn.modules.module.register_module_full_backward_pre_hook(
     full_backward_pre_hook
 )
 nn.modules.module.register_module_full_backward_hook(full_backward_hook)
+
+
+nn.modules.module.register_module_forward_pre_hook(forward_pre_hook2)
+nn.modules.module.register_module_forward_hook(forward_hook2)
+nn.modules.module.register_module_full_backward_pre_hook(
+    full_backward_pre_hook2
+)
+nn.modules.module.register_module_full_backward_hook(full_backward_hook2)
 
 model = nn.Sequential(
     nn.Linear(10, 100),
@@ -53,7 +77,3 @@ x2 = torch.randn(10, 10)
 x2.requires_grad = True
 loss2 = model2(x2, x2).sum()
 loss2.backward()
-
-print(list(model.children()))
-print(list(list(model.children())[0].children()))
-print(list(model2.children()))
