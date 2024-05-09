@@ -15,6 +15,8 @@ def print_(a: str):
 
 
 if __name__ == "__main__":
+    print(str.__subclasses__())
+
     a = StrSubClass("a")
     print_(a)  # a
     print(a)  # a
