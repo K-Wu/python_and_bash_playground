@@ -13,6 +13,15 @@ class Dummy:
             *args, **kwargs, return_breakdown=True
         )
 
+    def partially_get_activation_memory_per_layer_with_return_breakdown(
+        self, dummy_arg, *args, **kwargs
+    ):
+        """Helper function to facilitate type hinting of the return values"""
+        print("dummy arg", dummy_arg)
+        return self.get_activation_memory_per_layer(
+            *args, **kwargs, return_breakdown=True
+        )
+
 
 if __name__ == "__main__":
     d = Dummy()
@@ -20,3 +29,6 @@ if __name__ == "__main__":
         1, 2, 3, 4, ka=False, kb=2, kc=3.1
     )
     d.get_activation_memory_per_layer(1, 2, 3, 4)
+    d.partially_get_activation_memory_per_layer_with_return_breakdown(
+        "dummy", 1, 2, 3, 4, kc="d"
+    )
