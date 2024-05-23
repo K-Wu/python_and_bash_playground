@@ -46,6 +46,23 @@ model = nn.Sequential(
 parameters = set(
     [p.data.untyped_storage().data_ptr() for p in model.parameters()]
 )
+
+
+def set_paramters_data_timestamp(pdata):
+    pdata.timestamp = 12345
+    return pdata
+
+
+paramter_tensors = [id(p.data) for p in model.parameters()]
+paramter_tensors2 = [id(p.data) for p in model.parameters()]
+print(paramter_tensors, paramter_tensors2)
+
+set_paramters_timestamp = [
+    set_paramters_data_timestamp(p) for p in model.parameters()
+]
+paramter_timestamps = [p.timestamp for p in model.parameters()]
+
+
 print(parameters)
 
 

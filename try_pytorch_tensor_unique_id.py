@@ -88,12 +88,14 @@ def uniqueid(obj):
 
 def pack_hook(tensor):
     # Check if a and d share the same uniqueid
-    print(f"Dummy pack hook for {uniqueid(tensor)}.")
+    print(f"Dummy pack hook for {uniqueid(tensor)} {id(tensor)}.")
 
     return tensor
 
 
 def unpack_hook(tensor):
+    # Check if a and d share the same uniqueid
+    print(f"Dummy pack hook for {uniqueid(tensor)} {id(tensor)}.")
     return tensor
 
 
@@ -121,6 +123,7 @@ def main():
             c=c,
             d=LegendrePolynomial3.apply(aa),
         )
+        d.backward()
 
     print("after model")
     print()
