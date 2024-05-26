@@ -32,3 +32,6 @@ if __name__ == "__main__":
     d.partially_get_activation_memory_per_layer_with_return_breakdown(
         "dummy", 1, 2, 3, 4, kc="d"
     )
+    d.get_activation_memory_per_layer_with_return_breakdown(
+        **{"a": 12345, "b": 12345, "c": 12345, "d": 12345, "ka": 12345}
+    )
