@@ -7,7 +7,13 @@ def my_add_argument(parser):
         "--sort_by_src", action="store_true", help="sort by src"
     )
     parser.add_argument(
-        "--default_true_arg", default=True, action="store_false", help="sort by src"
+        "--default_true_arg",
+        default=True,
+        action="store_false",
+        help="sort by src",
+    )
+    parser.add_argument(
+        "--str_arg", type=str, help="str arg", default="str_arg"
     )
     parser.add_argument(
         "--take_in_list_test",

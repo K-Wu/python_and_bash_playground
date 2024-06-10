@@ -55,7 +55,8 @@ def set_paramters_data_timestamp(pdata):
 
 paramter_tensors = [id(p.data) for p in model.parameters()]
 paramter_tensors2 = [id(p.data) for p in model.parameters()]
-print(paramter_tensors, paramter_tensors2)
+paramter_tensors3 = [n for n, p in model.named_parameters()]
+print(paramter_tensors, paramter_tensors2, paramter_tensors3)
 
 set_paramters_timestamp = [
     set_paramters_data_timestamp(p) for p in model.parameters()
