@@ -10,13 +10,13 @@ def foo(value, q, worker, tl):
         dummy.timestamp = (
             12345  # This property will not be passed to the other process
         )
-        q.put((dummy, 12345))
+        q.put(("dummy", dummy, 12345))
         # del value.value["producer"]
         with value.get_lock():
             # From https://stackoverflow.com/questions/74910247/python-multiprocessing-sharing-variables-between-processes
             value.value -= 1
     else:
-        dummy, timestamp = q.get()
+        dummy_str, dummy, timestamp = q.get()
         print("dummy=", timestamp)
         # value.value["done"] = 1
         with value.get_lock():
