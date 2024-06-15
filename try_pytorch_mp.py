@@ -1,10 +1,16 @@
 # From https://stackoverflow.com/questions/50735493/how-to-share-a-list-of-tensors-in-pytorch-multiprocessing
 import torch.multiprocessing as mp
 import torch
+import logging
+
+logger = logging.getLogger(__name__)
+logger.setLevel(logging.DEBUG)
 
 
-def foo(value, q, worker, tl):
+def foo(value, q, worker, tl, queue_class):
+    dummy_queue = queue_class()
     tl[worker] += (worker + 1) * 1000
+    print("Log level: ", logger.level)
     if worker == 0:
         dummy = torch.randn(2, device="cuda:0")
         dummy.timestamp = (
@@ -36,13 +42,16 @@ if __name__ == "__main__":
     q = mp.Queue()
     # Not working: value = mp.Value(dict, {"producer": 1})
     value = mp.Value("i", 0)
-
-    p0 = mp.Process(target=foo, args=(value, q, 0, tl))
-    p1 = mp.Process(target=foo, args=(value, q, 1, tl))
+    # q.put(("dummy", 123, 12345))
+    p0 = mp.Process(target=foo, args=(value, q, 0, tl, mp.Queue))
+    logger.setLevel(logging.INFO)
+    p1 = mp.Process(target=foo, args=(value, q, 1, tl, mp.Queue))
     p0.start()
     p1.start()
-    p0.join()
+    # dummy_str, dummy, timestamp = q.get()
+    # print("dummy=", timestamp)
     p1.join()
+    p0.join()
 
     print("after mp: tl=")
     print(tl)
