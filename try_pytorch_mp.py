@@ -48,10 +48,12 @@ if __name__ == "__main__":
     p1 = mp.Process(target=foo, args=(value, q, 1, tl, mp.Queue))
     p0.start()
     p1.start()
+
     # dummy_str, dummy, timestamp = q.get()
     # print("dummy=", timestamp)
     p1.join()
     p0.join()
+    import just_print
 
     print("after mp: tl=")
     print(tl)
