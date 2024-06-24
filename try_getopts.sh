@@ -27,6 +27,7 @@ done
 
 # Default behavior
 number=0; model=""; rest=false; ws=false
+PYTORCH_CUDA_ALLOC_CONF=backend:cudaMallocAsync,pinned_use_cuda_host_register:True,pinned_num_register_threads:8
 
 # Parse short options
 OPTIND=1
@@ -44,6 +45,7 @@ done
 shift $(expr $OPTIND - 1) # remove options from positional parameters
 echo "number+1=$((number+1)), rest=$rest, ws=$ws, args=$@"
 ( 
+  export PYTORCH_CUDA_ALLOC_CONF
   # Find the script path
   DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" >/dev/null 2>&1 && pwd)"
   source "${DIR}/try_getopts_subshell.sh"
