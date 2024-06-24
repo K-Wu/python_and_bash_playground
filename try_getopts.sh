@@ -6,6 +6,7 @@ function print_usage {
   echo "Options:"
   echo "  -h, --help    Print this help message"
   echo "  -n, --number  A number"
+  echo "  -m, --model  A string"
   echo "  -r, --rest    A flag"
   echo "  -w, --ws      A flag"
 }
@@ -16,6 +17,7 @@ for arg in "$@"; do
   case "$arg" in
     '--help')   set -- "$@" '-h'   ;;
     '--number') set -- "$@" '-n'   ;;
+    '--model') set -- "$@" '-m'   ;;
     '--rest')   set -- "$@" '-r'   ;;
     '--ws')     set -- "$@" '-w'   ;;
     "--"*)      echo "Unrecognized argument $arg"; print_usage; exit 2;;
@@ -24,15 +26,16 @@ for arg in "$@"; do
 done
 
 # Default behavior
-number=0; rest=false; ws=false
+number=0; model=""; rest=false; ws=false
 
 # Parse short options
 OPTIND=1
-while getopts "hn:rw" opt
+while getopts "hn:m:rw" opt
 do
   case "$opt" in
     'h') print_usage; exit 0 ;;
     'n') number=${OPTARG} ;;
+    'm') model=${OPTARG} ;;
     'r') rest=true ;;
     'w') ws=true ;;
     '?') print_usage >&2; exit 1 ;;
@@ -40,3 +43,10 @@ do
 done
 shift $(expr $OPTIND - 1) # remove options from positional parameters
 echo "number+1=$((number+1)), rest=$rest, ws=$ws, args=$@"
+
+# if model is "336M", print 336 million; if model is 175b, print 175 billion; else print the model
+case $model in
+  "336M") echo "336 million" ;;
+  "175b") echo "175 billion" ;;
+  *) echo $model ;;
+esac
