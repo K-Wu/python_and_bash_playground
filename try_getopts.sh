@@ -43,6 +43,11 @@ do
 done
 shift $(expr $OPTIND - 1) # remove options from positional parameters
 echo "number+1=$((number+1)), rest=$rest, ws=$ws, args=$@"
+( 
+  # Find the script path
+  DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" >/dev/null 2>&1 && pwd)"
+  source "${DIR}/try_getopts_subshell.sh"
+)
 
 # if model is "336M", print 336 million; if model is 175b, print 175 billion; else print the model
 case $model in

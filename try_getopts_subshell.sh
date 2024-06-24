@@ -1,0 +1,1 @@
+echo "number+1=$((number+1)), rest=$rest, ws=$ws, args=$@"
