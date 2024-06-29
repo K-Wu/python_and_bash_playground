@@ -50,6 +50,23 @@ def unpack_hook(x):
     return x
 
 
+print("Checking if to operator save any tensor to the computation graph")
+with torch.autograd.graph.saved_tensors_hooks(pack_hook, unpack_hook):
+    a = torch.randn(5, 5, requires_grad=True)
+    b = a.clone()
+    print(b.grad_fn)
+
+print("Checking if view operator save any tensor to the computation graph")
+
+with torch.autograd.graph.saved_tensors_hooks(pack_hook, unpack_hook):
+    a = torch.randn(5, 5, requires_grad=True)
+    # a = a.t()
+    a = a.view(25)
+    # torch.baddbmm(a, a, a)
+
+
+print("Checking if pack/unpack hooks are working")
+
 with torch.autograd.graph.saved_tensors_hooks(pack_hook, unpack_hook):
     a = torch.randn(5, 5, requires_grad=True)
     y = torch.exp(a)

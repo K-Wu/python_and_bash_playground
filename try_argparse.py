@@ -22,6 +22,19 @@ def my_add_argument(parser):
         help="take in list test",
         default=[10, 25],
     )
+    parser.add_argument(
+        "--enable-nsys",
+        action="store_true",
+        help="Enable nsys profiling",
+    )
+    parser.add_argument(
+        "--nsys-duration",
+        type=int,
+        default=0,
+        help="The duration of nsys profiling. It is useful only when nsys profiling is turned on \
+                If it is set to 0, nsys profile until the program ends. \
+                Otherwise, nsys profiling is enabled and the duration is the time in seconds.",
+    )
 
 
 if __name__ == "__main__":
