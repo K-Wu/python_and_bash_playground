@@ -52,6 +52,7 @@ def forward_hook(module, input_positional_args, output):
 
 def main():
     sum_net = SumNet()
+    print(sum_net._get_name())
     sum_net.register_forward_pre_hook(forward_pre_hook)
     sum_net.register_forward_hook(forward_hook)
 

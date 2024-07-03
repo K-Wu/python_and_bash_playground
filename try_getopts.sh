@@ -5,10 +5,10 @@ function print_usage {
   echo "Usage: $0 [options] [arguments]"
   echo "Options:"
   echo "  -h, --help    Print this help message"
-  echo "  -n, --number  A number"
-  echo "  -m, --model  A string"
-  echo "  -r, --rest    A flag"
-  echo "  -w, --ws      A flag"
+  echo "  -n, --number  a number"
+  echo "  -m, --model   a string"
+  echo "  -r, --rest    a flag"
+  echo "  -w, --ws      a flag"
 }
 
 # Transform long options to short ones
@@ -48,6 +48,7 @@ echo "number+1=$((number+1)), rest=$rest, ws=$ws, args=$@"
   export PYTORCH_CUDA_ALLOC_CONF
   # Find the script path
   DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" >/dev/null 2>&1 && pwd)"
+  # The environment variables are passed to the subshell
   source "${DIR}/try_getopts_subshell.sh"
 )
 
