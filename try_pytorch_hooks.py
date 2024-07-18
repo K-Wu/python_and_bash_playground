@@ -46,6 +46,10 @@ def forward_hook(module, input_positional_args, output):
     print()
     print("    new_output:", new_output)
     print()
+    import traceback
+
+    # Print traceback
+    print(traceback.format_stack())
 
     return new_output
 

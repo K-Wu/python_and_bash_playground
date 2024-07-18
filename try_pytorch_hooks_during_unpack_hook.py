@@ -2,6 +2,8 @@
 import torch
 import torch.nn as nn
 
+saved_ctx = None
+
 
 class LegendrePolynomial3(torch.autograd.Function):
     # Adapted from https://pytorch.org/tutorials/intermediate/autograd_saved_tensors_hooks_tutorial.html
@@ -19,7 +21,14 @@ class LegendrePolynomial3(torch.autograd.Function):
         to stash information for backward computation. You can cache arbitrary
         objects for use in the backward pass using the ctx.save_for_backward method.
         """
-        ctx.save_for_backward(inputs)
+        print(
+            isinstance(ctx, torch.autograd.function._ContextMethodMixin),
+            inputs,
+        )
+        ctx.save_for_backward(inputs, inputs)
+        global saved_ctx
+        saved_ctx = ctx
+        # ctx.deepspeed_saved_tensors = (inputs,)
         # These stored as attributes without using save_for_backward will not trigger
         # pack / unpack hooks
         ctx.dummy = dummy_kwargs_1
@@ -34,7 +43,8 @@ class LegendrePolynomial3(torch.autograd.Function):
         with respect to the output, and we need to compute the gradient of the loss
         with respect to the input.
         """
-        (inputs,) = ctx.saved_tensors
+        (inputs, _) = ctx.saved_tensors
+        # (inputs,) = ctx.deepspeed_saved_tensors
         return grad_output * 1.5 * (5 * inputs**2 - 1), None
 
 
@@ -89,6 +99,9 @@ def uniqueid(obj):
 def pack_hook(tensor):
     # Check if a and d share the same uniqueid
     print(f"Dummy pack hook for {uniqueid(tensor)} {id(tensor)}.")
+    global saved_ctx
+    # if saved_ctx is not None:
+    #     print("saved_ctx", saved_ctx, saved_ctx.saved_tensors)
 
     return tensor
 
@@ -98,6 +111,7 @@ def unpack_hook(tensor):
     print(f"Dummy unpack hook for {uniqueid(tensor)} {id(tensor)}.")
     with torch.enable_grad():
         LegendrePolynomial3.apply(tensor)
+    print(f"Dummy unpack hook done")
     return tensor
 
 
