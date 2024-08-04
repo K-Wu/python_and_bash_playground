@@ -4,6 +4,7 @@
 from torch.utils.checkpoint import checkpoint_sequential
 import torch.nn as nn
 import torch
+import traceback
 
 
 def oneline_print(*args):
@@ -13,6 +14,7 @@ def oneline_print(*args):
 
 def forward_pre_hook(m, inputs):
     oneline_print("[Forward Pre Hook]", m)
+    oneline_print(*traceback.format_stack())
 
 
 def forward_hook(m, inputs, outputs):
@@ -25,6 +27,17 @@ def full_backward_hook(m, grad_input, grad_output):
 
 def full_backward_pre_hook(m, grad_output):
     oneline_print("[Full Backward Pre]", m)
+    oneline_print(*traceback.format_stack())
+
+
+def pack_hook(tensor):
+    oneline_print("[Pack Hook]", tensor.shape)
+    return tensor
+
+
+def unpack_hook(tensor):
+    oneline_print("[Unpack Hook]", tensor.shape)
+    return tensor
 
 
 nn.modules.module.register_module_forward_pre_hook(forward_pre_hook)
@@ -45,7 +58,7 @@ model = nn.Sequential(
 )
 
 # create the model inputs
-input_var = torch.randn(1, 100)
+input_var = torch.randn(1, 100, requires_grad=True)
 
 # set the number of checkpoint segments
 segments = 2
@@ -55,9 +68,11 @@ segments = 2
 modules = [module for k, module in model._modules.items()]
 
 # now call the checkpoint API and get the output
+# out = model(input_var)
 out = checkpoint_sequential(modules, segments, input_var)
 
 # run the backwards pass on the model. For backwards pass, for simplicity purpose,
 # we won't calculate the loss and rather backprop on out.sum()
-model.zero_grad()
-out.sum().backward()
+with torch.autograd.graph.saved_tensors_hooks(pack_hook, unpack_hook):
+    model.zero_grad()
+    out.sum().backward()

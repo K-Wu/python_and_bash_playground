@@ -40,7 +40,9 @@ def my_add_argument(parser):
 if __name__ == "__main__":
     parser = argparse.ArgumentParser(description="RGCN")
     my_add_argument(parser)
-    args = parser.parse_args()
+
+    parser2 = argparse.ArgumentParser(description="RGCN")
+    args = parser.parse_args([])
     print(args)
     print(vars(args))
     print(args.sort_by_src)
@@ -50,3 +52,4 @@ if __name__ == "__main__":
 
     args = parser.parse_args()
     print(args)
+    print(parser2.parse_args())

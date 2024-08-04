@@ -17,7 +17,7 @@ def main2():
     import inspect
 
     print(traceback.format_stack())
-    # len(traceback.format_stack()) == 2, and traceback.format_stack()[len(traceback.format_stack()) - 2] is the frame of the caller at if __name__=="__main__". The traceback is '  File "/home/kwu/HET/hrt/misc/playground/try_get_variable_from_traceback.py", line 41, in <module>\n    main2_wrapper()\n'
+    # len(traceback.format_stack()) == 3, and traceback.format_stack()[len(traceback.format_stack()) -1 - 2] is the frame of the caller at if __name__=="__main__". The traceback is '  File "/home/kwu/HET/hrt/misc/playground/try_get_variable_from_traceback.py", line 41, in <module>\n    main2_wrapper()\n'
 
     # Therefore we need to call .f_back twice to get the frame of the caller at if __name__=="__main__"
     frame = inspect.currentframe().f_back.f_back

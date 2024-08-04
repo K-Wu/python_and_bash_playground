@@ -26,6 +26,7 @@ class LegendrePolynomial3(torch.autograd.Function):
             inputs,
         )
         ctx.save_for_backward(inputs, inputs)
+        ctx.inputs = inputs
         global saved_ctx
         saved_ctx = ctx
         # ctx.deepspeed_saved_tensors = (inputs,)
